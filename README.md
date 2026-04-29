@@ -110,9 +110,3 @@ removes the lowest-magnitude *active* weights across all layers simultaneously.
 
 ---
 
-
-## References
-
-1. Frankle & Carbin, "The Lottery Ticket Hypothesis", ICLR 2019
-2. Renda et al., "Comparing Rewinding and Fine-tuning", ICLR 2020
-3. Oh, Baik & Lee, "Find a Winning Sign: Sign Is All We Need", ICLR 2025
