@@ -51,9 +51,6 @@ def get_loader(
         ds = torchvision.datasets.CIFAR100(
             DATA_DIR, train=train, transform=tfms, download=True
         )
-    elif dataset_name == "tiny_imagenet":
-        split = "train" if train else "val"
-        ds = _TinyImageNet(DATA_DIR, split=split, transform=tfms)
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}")
 
@@ -67,55 +64,3 @@ def get_loader(
         drop_last=train,
     )
 
-
-# Tiny-ImageNet 
-
-class _TinyImageNet(torch.utils.data.Dataset):
-
-    def __init__(self, root: str, split: str = "train", transform=None):
-        self.root      = os.path.join(root, "tiny-imagenet-200")
-        self.split     = split
-        self.transform = transform
-
-        
-        with open(os.path.join(self.root, "wnids.txt")) as f:
-            self.classes = [l.strip() for l in f]
-        self.class_to_idx = {c: i for i, c in enumerate(self.classes)}
-
-        self.samples = self._load_samples()
-
-    def _load_samples(self):
-        samples = []
-        if self.split == "train":
-            for cls in self.classes:
-                img_dir = os.path.join(self.root, "train", cls, "images")
-                if not os.path.isdir(img_dir):
-                    continue
-                for fname in os.listdir(img_dir):
-                    if fname.endswith(".JPEG"):
-                        samples.append(
-                            (os.path.join(img_dir, fname), self.class_to_idx[cls])
-                        )
-        else:  
-            ann_file = os.path.join(self.root, "val", "val_annotations.txt")
-            img_dir  = os.path.join(self.root, "val", "images")
-            with open(ann_file) as f:
-                for line in f:
-                    parts = line.strip().split("\t")
-                    fname, cls = parts[0], parts[1]
-                    if cls in self.class_to_idx:
-                        samples.append(
-                            (os.path.join(img_dir, fname), self.class_to_idx[cls])
-                        )
-        return samples
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        from PIL import Image
-        path, label = self.samples[idx]
-        img = Image.open(path).convert("RGB")
-        if self.transform:
-            img = self.transform(img)
-        return img, label
