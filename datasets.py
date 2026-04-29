@@ -1,7 +1,3 @@
-"""
-datasets.py — DataLoader factories for CIFAR-10, CIFAR-100, Tiny-ImageNet.
-"""
-
 import os
 import torch
 from torch.utils.data import DataLoader
@@ -11,7 +7,7 @@ import torchvision.transforms as T
 from config import DATA_DIR, DATASET_CFG
 
 
-# ─────────────────────────── transforms ──────────────────────
+# transforms
 
 def _build_transforms(dataset_name: str, train: bool, img_size: int):
     cfg  = DATASET_CFG[dataset_name]
@@ -23,7 +19,7 @@ def _build_transforms(dataset_name: str, train: bool, img_size: int):
             T.RandomCrop(img_size, padding=4),
             T.RandomHorizontalFlip(),
         ]
-        if img_size >= 64:                    # Tiny-ImageNet
+        if img_size >= 64:                    
             tfms = [T.RandomResizedCrop(img_size)] + tfms[1:]
     else:
         tfms = [T.Resize(img_size)] if img_size != 32 else []
@@ -32,7 +28,7 @@ def _build_transforms(dataset_name: str, train: bool, img_size: int):
     return T.Compose(tfms)
 
 
-# ─────────────────────────── loaders ─────────────────────────
+# loaders 
 
 def get_loader(
     dataset_name: str,
@@ -41,7 +37,7 @@ def get_loader(
     num_workers: int = 4,
     shuffle: bool | None = None,
 ) -> DataLoader:
-    """Return a DataLoader for the requested split."""
+    
 
     cfg      = DATASET_CFG[dataset_name]
     img_size = cfg["img_size"]
@@ -72,26 +68,16 @@ def get_loader(
     )
 
 
-# ─────────────────────────── Tiny-ImageNet ───────────────────
+# Tiny-ImageNet 
 
 class _TinyImageNet(torch.utils.data.Dataset):
-    """
-    Minimal Tiny-ImageNet wrapper.
-
-    Expected layout (after running download_tiny_imagenet.sh):
-        <DATA_DIR>/tiny-imagenet-200/
-            train/<class_id>/images/*.JPEG
-            val/images/*.JPEG
-            val/val_annotations.txt
-            wnids.txt
-    """
 
     def __init__(self, root: str, split: str = "train", transform=None):
         self.root      = os.path.join(root, "tiny-imagenet-200")
         self.split     = split
         self.transform = transform
 
-        # build class → index mapping
+        
         with open(os.path.join(self.root, "wnids.txt")) as f:
             self.classes = [l.strip() for l in f]
         self.class_to_idx = {c: i for i, c in enumerate(self.classes)}
@@ -110,7 +96,7 @@ class _TinyImageNet(torch.utils.data.Dataset):
                         samples.append(
                             (os.path.join(img_dir, fname), self.class_to_idx[cls])
                         )
-        else:  # val
+        else:  
             ann_file = os.path.join(self.root, "val", "val_annotations.txt")
             img_dir  = os.path.join(self.root, "val", "images")
             with open(ann_file) as f:
