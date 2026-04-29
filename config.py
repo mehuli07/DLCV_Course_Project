@@ -1,12 +1,6 @@
-"""
-config.py — Central configuration for the DLCV project:
-"Understanding Trainability of Sparse Vision Transformers via Winning Sign
-and Cross-Dataset Generalization"
-"""
-
 import os
 
-# ─────────────────────────── paths ───────────────────────────
+# paths 
 ROOT        = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR    = os.path.join(ROOT, "data")
 CKPT_DIR    = os.path.join(ROOT, "checkpoints")
@@ -16,7 +10,7 @@ RESULTS_DIR = os.path.join(ROOT, "results")
 for d in [DATA_DIR, CKPT_DIR, LOG_DIR, RESULTS_DIR]:
     os.makedirs(d, exist_ok=True)
 
-# ─────────────────────────── datasets ────────────────────────
+# datasets 
 DATASET_CFG = {
     "cifar10": {
         "num_classes": 10,
@@ -38,9 +32,9 @@ DATASET_CFG = {
     },
 }
 
-# ─────────────────────────── model ───────────────────────────
+# model 
 VIT_CFG = {
-    "patch_size":   4,     # suitable for 32×32 CIFAR
+    "patch_size":   4,     
     "embed_dim":    192,
     "depth":        9,
     "num_heads":    3,
@@ -49,7 +43,7 @@ VIT_CFG = {
     "attn_drop":    0.0,
 }
 
-# ─────────────────────────── training ────────────────────────
+# training 
 TRAIN_CFG = {
     "batch_size":   128,
     "num_workers":  4,
@@ -65,34 +59,30 @@ TRAIN_CFG = {
     "final_epochs": 100,
 
     # optimiser
-    "optimizer":    "sgd",      # "sgd" | "adam"
+    "optimizer":    "sgd",      
     "lr":           0.1,
     "momentum":     0.9,
     "weight_decay": 5e-4,
 
-    # cosine LR scheduler (used in final training)
     "scheduler":    "cosine",
 
-    # step-decay milestones as fractions of final_epochs
     "lr_milestones": [0.5, 0.75],
     "lr_gamma":      0.1,
 }
 
-# ─────────────────────────── pruning ─────────────────────────
+# pruning 
 PRUNE_CFG = {
     # number of LRR/AWS iterative pruning rounds
     "T": 10,
 
-    # fraction of non-zero weights removed per round  (≈20 %)
+    # fraction of non-zero weights removed per round 
     "prune_rate": 0.20,
 
-    # remaining-parameter ratios to evaluate at (for plots)
+    # remaining-parameter ratios to evaluate at
     "eval_ratios": [0.8, 0.33, 0.13, 0.06, 0.02],
 }
 
-# ─────────────────────────── AWS ─────────────────────────────
+# AWS 
 AWS_CFG = {
-    # α ~ Uniform(0,1) used to interpolate norm-layer params
-    # No extra hyper-params needed beyond the training config.
     "enabled": True,
 }
