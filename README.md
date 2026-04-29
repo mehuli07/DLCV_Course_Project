@@ -11,7 +11,7 @@ and Cross-Dataset Generalization**
 ```
 dlcv_project/
 ├── config.py              # All hyper-parameters in one place
-├── datasets.py            # DataLoader factories (CIFAR-10/100, Tiny-ImageNet)
+├── datasets.py            # DataLoader factories (CIFAR-10/100)
 ├── models.py              # ViT (from scratch) + ResNet-50 (torchvision)
 ├── pruning.py             # Mask creation, signed-mask, sparsity helpers
 ├── trainer.py             # Standard / LRR / AWS training loops
@@ -31,12 +31,6 @@ dlcv_project/
 pip install torch torchvision matplotlib numpy
 ```
 
-For Tiny-ImageNet download:
-```bash
-wget http://cs231n.stanford.edu/tiny-imagenet-200.zip
-unzip tiny-imagenet-200.zip -d data/
-```
-
 ---
 
 ## Running
@@ -53,9 +47,6 @@ python experiment_partA.py --arch vit --dataset cifar10 --device cuda
 
 # Part B — Transfer CIFAR-10 masks to CIFAR-100
 python experiment_partB.py --arch vit --src cifar10 --tgt cifar100 --device cuda
-
-# Part B — Transfer to Tiny-ImageNet
-python experiment_partB.py --arch vit --src cifar10 --tgt tiny_imagenet --device cuda
 
 # Part C — ResNet-50 baseline
 python experiment_partC.py --dataset cifar10 --device cuda
@@ -87,7 +78,6 @@ LMC and SGD-noise stability are computed for the AWS signed-mask configuration.
 
 Masks/signed masks learned on **CIFAR-10** are transferred to:
 - CIFAR-100
-- Tiny-ImageNet
 
 Configurations: scratch baseline, LRR mask, LRR signed mask, AWS mask, AWS signed mask.
 
